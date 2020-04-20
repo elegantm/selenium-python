@@ -17,6 +17,7 @@ from selenium import webdriver
 import  time  #调入time函数
 import  re
 import  logging as log
+import codecs
 
 
 
@@ -37,18 +38,18 @@ def init_conf():
 
 def crow_website() -> str:
 
-    # fireOptions = webdriver.FirefoxOptions()
-    # fireOptions.headless = True
+    fireOptions = webdriver.FirefoxOptions()
+    fireOptions.headless = True
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-extensions')
-    options.add_argument('--disable-gpu')
+    # options = webdriver.ChromeOptions()
+    # options.add_argument('--headless')
+    # options.add_argument('--no-sandbox')
+    # options.add_argument('--disable-extensions')
+    # options.add_argument('--disable-gpu')
 
-    browser = webdriver.Chrome(options=options)
+    # browser = webdriver.Chrome(options=options,executable_path=r'D:\Program Files\selenium_explore\chromedriver.exe')
 
-    # browser = webdriver.Firefox(options=fireOptions,executable_path=r'D:\Program Files\selenium_explore\geckodriver.exe')
+    browser = webdriver.Firefox(options=fireOptions,executable_path=r'D:\Program Files\selenium_explore\geckodriver.exe')
 
 
     browser.get("http://rsj.sh.gov.cn/xxzsp/ksy/wangz/wendchaxun_701.jsp")
@@ -75,7 +76,8 @@ def crow_website() -> str:
 
 
 def deal_page_info(content:str):
-    soup = BeautifulSoup(content, 'html5lib')
+    # 'html5lib'
+    soup = BeautifulSoup(content, "lxml")
     log.info('{0}:{1}'.format("总长度", len(soup.find_all('wend'))))
     # log.info("总长度", len(soup.find_all('wend')))
 
@@ -108,6 +110,9 @@ def get_time(datestr):
     t = datetime.datetime.strptime(datestr, '%Y.%m.%d')
     return t
 
+def save_file(page:str):
+    with open('page.txt','a') as f:
+        f.write(page)
 
 
 
@@ -115,6 +120,7 @@ def get_time(datestr):
 if __name__ == '__main__':
     init_conf()
     page =crow_website()
+    save_file(page)
     deal_page_info(page)
 
 
